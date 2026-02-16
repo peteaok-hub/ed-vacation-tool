@@ -2,165 +2,151 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-# --- PAGE CONFIGURATION ---
+# --- PAGE CONFIGURATION (Mobile Optimized) ---
 st.set_page_config(
-    page_title="Ed Guevara | Asset Strategy", 
+    page_title="Ed Guevara | Vacation Strategies", 
     page_icon="🏛️", 
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="expanded" # Force Sidebar Open on Load
 )
 
-# --- BRANDING: MATCHING EDGUEVARA.COM ---
+# --- CSS STYLING ---
 st.markdown("""
     <style>
-    /* Hide Default Streamlit Elements */
+    /* 1. FORCE SIDEBAR ARROW VISIBILITY (Black Button / White Arrow) */
+    [data-testid="stSidebarCollapsedControl"] {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+        border: 2px solid #C5A059 !important; /* Gold Border */
+        border-radius: 50% !important;
+        display: block !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] svg {
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
+    }
+    
+    /* 2. HIDE STREAMLIT BRANDING */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* BLACK & GOLD THEME OVERRIDES */
-    .stApp {
-        background-color: #ffffff; /* Clean White Background for contrast */
-    }
-    
-    /* Custom Button Style */
+    /* 3. CUSTOM BUTTONS */
     .stButton>button {
         width: 100%;
-        border-radius: 5px;
-        height: 3.5em;
+        border-radius: 20px;
         font-weight: bold;
-        font-size: 18px;
-        background-color: #000000; /* Infinite Flow Black */
-        color: #C5A059; /* Approximate Gold from your site */
-        border: 2px solid #C5A059;
-    }
-    .stButton>button:hover {
-        background-color: #C5A059;
-        color: black;
-        border: 2px solid black;
-    }
-
-    /* Cards */
-    .metric-card {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        border-left: 5px solid #C5A059;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-    }
-    
-    h1, h2, h3 {
-        font-family: 'Helvetica', sans-serif;
-        color: #1a1a1a;
+        height: 3em;
+        background-color: #005596; /* Wyndham Blue Accent */
+        color: white;
+        border: none;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR NAV ---
+# --- SIDEBAR (Navigation) ---
 with st.sidebar:
-    st.title("ED GUEVARA")
-    st.caption("VISION. STRATEGY. EXECUTION.")
-    st.markdown("---")
+    st.image("https://placekitten.com/200/200", width=150) # REPLACE WITH YOUR PHOTO
+    st.title("Ed Guevara")
+    st.info("Real Estate Investor\n20-Year Club Owner")
     
-    page = st.radio("SELECT MODULE:", ["🏛️ The Philosophy", "📉 Inflation Calculator", "💎 Asset Inventory", "📞 Text Ed"])
+    page = st.radio("Go to:", ["🏠 The Strategy", "📉 Inflation Calculator", "💎 VIP Inventory", "📞 Contact Ed"])
     
-    st.markdown("---")
-    st.info("**Infinite Flow Investments**\n\n*Authorized Asset Strategy Tool*")
+    st.warning("⚠️ **Disclaimer:** This is a personal asset management tool. Not an official Wyndham site.")
 
-# --- PAGE 1: PHILOSOPHY ---
-if page == "🏛️ The Philosophy":
-    st.title("VACATION ASSET STRATEGY")
-    st.write("Real estate is not just about property; it's about potential.")
+# --- PAGE 1: THE STRATEGY ---
+if page == "🏠 The Strategy":
+    st.title("Stop Renting. Start Owning.")
+    st.write("Most people treat vacations as an *expense*. I treat them as an *asset*.")
     
-    st.markdown("""
-    <div class="metric-card">
-    <h3>The Problem: Rental Wealth Transfer</h3>
-    Most high-net-worth families unknowingly transfer <b>$100,000+</b> of wealth to hotel corporations (Marriott, Hilton) over their lifetime, with <b>zero equity</b> retained.
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("### Why I Built This Tool")
+    st.write("""
+    I've been a Real Estate Investor for 12 years and an Owner for 20. 
+    I built this software to track the **math** behind vacation ownership.
     
-    st.write("I built this tool to analyze the **Cost of Inaction**.")
-    st.success("👉 Navigate to the **Inflation Calculator** to run your audit.")
+    **The 3 Rules of Vacation Wealth:**
+    1. Never rent what you can own.
+    2. Inflation is guaranteed; hotel prices will double every 10-15 years.
+    3. Points are a currency—use them wisely.
+    """)
+    
+    st.success("👉 Go to the **'Inflation Calculator'** tab to see your numbers.")
 
 # --- PAGE 2: CALCULATOR ---
 elif page == "📉 Inflation Calculator":
-    st.header("📉 AUDIT: COST OF INACTION")
-    st.write("Projecting the 20-year liability of renting vs. owning.")
+    st.header("📉 The Cost of Doing Nothing")
+    st.write("If you don't upgrade today, you are committing to renting hotels for the rest of your life. Let's see the damage.")
     
     # Inputs
     col1, col2 = st.columns(2)
     with col1:
-        hotel_spend = st.number_input("Annual Hotel Spend ($)", value=4000, step=500)
+        hotel_spend = st.number_input("Yearly Hotel Spend ($)", value=3000, step=500)
     with col2:
-        years = st.slider("Investment Horizon (Years)", 5, 30, 20)
+        years = st.slider("Years Remaining", 5, 30, 20)
     
-    inflation = 0.04 # 4% Hotel Inflation Rate
+    inflation_rate = 0.04 # 4% Historical Average
     
-    # Fast Calculation
-    years_list = list(range(1, years + 1))
-    cumulative_spend = []
+    # Logic
+    data = []
     current_cost = hotel_spend
-    running_total = 0
+    cumulative_spend = 0
     
-    for _ in years_list:
-        running_total += current_cost
-        cumulative_spend.append(running_total)
-        current_cost = current_cost * (1 + inflation)
+    for i in range(1, years + 1):
+        cumulative_spend += current_cost
+        data.append({"Year": i, "Total Wasted": cumulative_spend})
+        current_cost = current_cost * (1 + inflation_rate)
     
-    df = pd.DataFrame({"Year": years_list, "Total Liability": cumulative_spend})
+    df = pd.DataFrame(data)
     
-    # Chart
-    chart = alt.Chart(df).mark_area(
-        color='#1a1a1a', # Black
-        opacity=0.8
-    ).encode(
+    # Visualization (Red Area Chart)
+    chart = alt.Chart(df).mark_area(color='#ff4b4b', opacity=0.6).encode(
         x='Year',
-        y='Total Liability',
-        tooltip=['Year', 'Total Liability']
-    ).properties(height=320)
+        y='Total Wasted',
+        tooltip=['Year', 'Total Wasted']
+    ).properties(height=300)
     
     st.altair_chart(chart, use_container_width=True)
     
-    final_loss = cumulative_spend[-1]
+    final_waste = df.iloc[-1]['Total Wasted']
+    st.error(f"💀 **Total Wealth Transferred to Hotels:** ${int(final_waste):,}")
     
-    st.markdown(f"""
-    <div class="metric-card" style="border-left: 5px solid red;">
-    <h3>Total Wealth Transferred: ${int(final_loss):,}</h3>
-    This is capital leaving your family portfolio forever.
-    </div>
-    """, unsafe_allow_html=True)
+    st.info("💡 ** Insight:** You are going to spend this money anyway. The only question is: Do you want a stack of receipts, or a deed?")
 
 # --- PAGE 3: INVENTORY ---
-elif page == "💎 Asset Inventory":
-    st.header("💎 ASSET CLASS COMPARISON")
+elif page == "💎 VIP Inventory":
+    st.header("💎 The Asset Class")
+    st.write("This is what your maintenance fees buy you vs. what cash buys you.")
     
-    tab1, tab2 = st.tabs(["❌ The Liability (Rent)", "✅ The Asset (Own)"])
+    tab1, tab2 = st.tabs(["❌ The Renter ($300/nt)", "✅ The Owner ($85/nt)"])
     
     with tab1:
         st.error("Standard Hotel Room")
-        st.write("• **Zero Equity**")
-        st.write("• 325 Sq Ft")
-        st.write("• No Kitchen")
-        st.caption("Avg Cost: $350/night (and rising)")
+        st.write("* 325 Sq Ft")
+        st.write("* No Kitchen (Eating out 3x/day)")
+        st.write("* View of the HVAC unit")
         
     with tab2:
         st.success("Presidential Reserve")
-        st.write("• **Deeded Real Estate Interest**")
-        st.write("• 1,200+ Sq Ft")
-        st.write("• Full Gourmet Kitchen")
-        st.caption("Maintenance Cost: ~$85/night (Fixed)")
+        st.write("* 1,200+ Sq Ft")
+        st.write("* Full Gourmet Kitchen")
+        st.write("* Jacuzzi Tub & Balcony")
+        st.write("* **Deeded Equity**")
 
 # --- PAGE 4: CONTACT ---
-elif page == "📞 Text Ed":
-    st.header("EXECUTE STRATEGY")
-    st.write("Text me the number from your Audit.")
+elif page == "📞 Contact Ed":
+    st.header("Let's Run Your Numbers")
     
-    st.markdown("""
-    <div class="metric-card">
-    <b>Ed Guevara</b><br>
-    <i>Infinite Flow Investments</i><br>
-    <br>
-    📱 <b>(555) 123-4567</b><br>
-    📧 ed@edguevara.com
-    </div>
-    """, unsafe_allow_html=True)
+    contact_form = """
+    <form action="https://formsubmit.co/YOUR_EMAIL_HERE" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="email" name="email" placeholder="Your Email" required style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <textarea name="message" placeholder="What is your biggest vacation frustration?" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
+        <button type="submit" style="width: 100%; background-color: #005596; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">SEND TO ED</button>
+    </form>
+    """
+    st.markdown(contact_form, unsafe_allow_html=True)
+    
+    st.write("---")
+    st.write("**Ed Guevara**")
+    st.write("📧 ed@edguevara.com")
+    st.write("📱 (555) 123-4567")

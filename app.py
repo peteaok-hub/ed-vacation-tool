@@ -2,151 +2,140 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-# --- PAGE CONFIGURATION (Mobile Optimized) ---
+# --- PAGE CONFIGURATION ---
 st.set_page_config(
-    page_title="Ed Guevara | Vacation Strategies", 
+    page_title="Ed Guevara | Asset Strategy", 
     page_icon="🏛️", 
     layout="centered",
-    initial_sidebar_state="expanded" # Force Sidebar Open on Load
+    initial_sidebar_state="expanded" # FORCE OPEN
 )
 
-# --- CSS STYLING ---
+# --- BRANDING: LUXURY BLACK & GOLD THEME ---
 st.markdown("""
     <style>
-    /* 1. FORCE SIDEBAR ARROW VISIBILITY (Black Button / White Arrow) */
-    [data-testid="stSidebarCollapsedControl"] {
-        background-color: #000000 !important;
-        color: #ffffff !important;
-        border: 2px solid #C5A059 !important; /* Gold Border */
-        border-radius: 50% !important;
-        display: block !important;
-    }
-    [data-testid="stSidebarCollapsedControl"] svg {
-        fill: #ffffff !important;
-        stroke: #ffffff !important;
+    /* 1. FORCE TEXT COLOR (Global Black Text) */
+    html, body, [class*="css"] {
+        font-family: 'Helvetica', sans-serif;
+        color: #1a1a1a !important; 
     }
     
-    /* 2. HIDE STREAMLIT BRANDING */
+    /* 2. REMOVE THE SIDEBAR ARROW (Prevent accidental closing) */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: none !important;
+    }
+    
+    /* 3. ENSURE MOBILE HAMBURGER MENU IS VISIBLE (Black) */
+    [data-testid="baseButton-header"] {
+        color: #000000 !important;
+    }
+    
+    /* 4. BACKGROUND SETTINGS */
+    .stApp {
+        background-color: #ffffff;
+    }
+    
+    /* 5. HEADERS */
+    h1, h2, h3 {
+        color: #000000 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+    }
+    
+    /* 6. SIDEBAR STYLING */
+    section[data-testid="stSidebar"] {
+        background-color: #111111; /* Dark Sidebar */
+        width: 300px !important; /* Force Width */
+    }
+    /* Force White Text INSIDE Sidebar only */
+    section[data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
+    
+    /* 7. METRIC CARDS */
+    .metric-card {
+        background-color: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        border-left: 6px solid #C5A059;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        color: #333333;
+    }
+    
+    /* Hide Default Elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    
-    /* 3. CUSTOM BUTTONS */
-    .stButton>button {
-        width: 100%;
-        border-radius: 20px;
-        font-weight: bold;
-        height: 3em;
-        background-color: #005596; /* Wyndham Blue Accent */
-        color: white;
-        border: none;
-    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR (Navigation) ---
+# --- SIDEBAR NAV ---
 with st.sidebar:
-    st.image("https://placekitten.com/200/200", width=150) # REPLACE WITH YOUR PHOTO
-    st.title("Ed Guevara")
-    st.info("Real Estate Investor\n20-Year Club Owner")
+    st.title("ED GUEVARA")
+    st.caption("VISION. STRATEGY. EXECUTION.")
+    st.markdown("---")
     
-    page = st.radio("Go to:", ["🏠 The Strategy", "📉 Inflation Calculator", "💎 VIP Inventory", "📞 Contact Ed"])
+    page = st.radio("SELECT MODULE:", ["🏛️ The Philosophy", "📉 Inflation Calculator", "💎 Asset Inventory", "📞 Text Ed"])
     
-    st.warning("⚠️ **Disclaimer:** This is a personal asset management tool. Not an official Wyndham site.")
+    st.markdown("---")
+    st.info("**Infinite Flow Investments**\n\n*Authorized Asset Strategy Tool*")
 
-# --- PAGE 1: THE STRATEGY ---
-if page == "🏠 The Strategy":
-    st.title("Stop Renting. Start Owning.")
-    st.write("Most people treat vacations as an *expense*. I treat them as an *asset*.")
+# --- PAGE 1: PHILOSOPHY ---
+if page == "🏛️ The Philosophy":
+    st.title("Vacation Asset Strategy")
+    st.write("Real estate is not just about property; it's about potential.")
     
-    st.markdown("### Why I Built This Tool")
-    st.write("""
-    I've been a Real Estate Investor for 12 years and an Owner for 20. 
-    I built this software to track the **math** behind vacation ownership.
+    st.markdown("""
+    <div class="metric-card">
+    <h3>The Problem: Rental Wealth Transfer</h3>
+    Most high-net-worth families unknowingly transfer <b>$100,000+</b> of wealth to hotel corporations over their lifetime, with <b>zero equity</b> retained.
+    </div>
+    """, unsafe_allow_html=True)
     
-    **The 3 Rules of Vacation Wealth:**
-    1. Never rent what you can own.
-    2. Inflation is guaranteed; hotel prices will double every 10-15 years.
-    3. Points are a currency—use them wisely.
-    """)
-    
-    st.success("👉 Go to the **'Inflation Calculator'** tab to see your numbers.")
+    st.write("I built this tool to analyze the **Cost of Inaction**.")
+    st.success("👉 Click **Inflation Calculator** on the left to run your audit.")
 
 # --- PAGE 2: CALCULATOR ---
 elif page == "📉 Inflation Calculator":
-    st.header("📉 The Cost of Doing Nothing")
-    st.write("If you don't upgrade today, you are committing to renting hotels for the rest of your life. Let's see the damage.")
+    st.header("📉 Audit: Cost of Inaction")
+    st.write("Projecting the 20-year liability of renting vs. owning.")
     
-    # Inputs
     col1, col2 = st.columns(2)
     with col1:
-        hotel_spend = st.number_input("Yearly Hotel Spend ($)", value=3000, step=500)
+        hotel_spend = st.number_input("Annual Hotel Spend ($)", value=4000, step=500)
     with col2:
-        years = st.slider("Years Remaining", 5, 30, 20)
+        years = st.slider("Investment Horizon (Years)", 5, 30, 20)
     
-    inflation_rate = 0.04 # 4% Historical Average
+    inflation = 0.04 
+    years_list = list(range(1, years + 1))
+    cumulative_spend = [hotel_spend * ((1 + inflation) ** i) for i in range(years)]
+    cumulative_total = [sum(cumulative_spend[:i+1]) for i in range(years)]
     
-    # Logic
-    data = []
-    current_cost = hotel_spend
-    cumulative_spend = 0
+    df = pd.DataFrame({"Year": years_list, "Total Liability": cumulative_total})
     
-    for i in range(1, years + 1):
-        cumulative_spend += current_cost
-        data.append({"Year": i, "Total Wasted": cumulative_spend})
-        current_cost = current_cost * (1 + inflation_rate)
-    
-    df = pd.DataFrame(data)
-    
-    # Visualization (Red Area Chart)
-    chart = alt.Chart(df).mark_area(color='#ff4b4b', opacity=0.6).encode(
-        x='Year',
-        y='Total Wasted',
-        tooltip=['Year', 'Total Wasted']
-    ).properties(height=300)
+    chart = alt.Chart(df).mark_area(color='#1a1a1a', opacity=0.8).encode(
+        x='Year', y='Total Liability'
+    ).properties(height=320)
     
     st.altair_chart(chart, use_container_width=True)
-    
-    final_waste = df.iloc[-1]['Total Wasted']
-    st.error(f"💀 **Total Wealth Transferred to Hotels:** ${int(final_waste):,}")
-    
-    st.info("💡 ** Insight:** You are going to spend this money anyway. The only question is: Do you want a stack of receipts, or a deed?")
+    st.error(f"Total Wealth Transferred: ${int(cumulative_total[-1]):,}")
 
 # --- PAGE 3: INVENTORY ---
-elif page == "💎 VIP Inventory":
-    st.header("💎 The Asset Class")
-    st.write("This is what your maintenance fees buy you vs. what cash buys you.")
-    
-    tab1, tab2 = st.tabs(["❌ The Renter ($300/nt)", "✅ The Owner ($85/nt)"])
-    
+elif page == "💎 Asset Inventory":
+    st.header("💎 Asset Class Comparison")
+    tab1, tab2 = st.tabs(["❌ The Liability", "✅ The Asset"])
     with tab1:
-        st.error("Standard Hotel Room")
-        st.write("* 325 Sq Ft")
-        st.write("* No Kitchen (Eating out 3x/day)")
-        st.write("* View of the HVAC unit")
-        
+        st.error("Standard Hotel Room: Zero Equity, No Kitchen.")
     with tab2:
-        st.success("Presidential Reserve")
-        st.write("* 1,200+ Sq Ft")
-        st.write("* Full Gourmet Kitchen")
-        st.write("* Jacuzzi Tub & Balcony")
-        st.write("* **Deeded Equity**")
+        st.success("Presidential Reserve: Deeded Interest, Full Kitchen.")
 
 # --- PAGE 4: CONTACT ---
-elif page == "📞 Contact Ed":
-    st.header("Let's Run Your Numbers")
-    
-    contact_form = """
-    <form action="https://formsubmit.co/YOUR_EMAIL_HERE" method="POST">
-        <input type="text" name="name" placeholder="Your Name" required style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-        <input type="email" name="email" placeholder="Your Email" required style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-        <textarea name="message" placeholder="What is your biggest vacation frustration?" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
-        <button type="submit" style="width: 100%; background-color: #005596; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">SEND TO ED</button>
-    </form>
-    """
-    st.markdown(contact_form, unsafe_allow_html=True)
-    
-    st.write("---")
-    st.write("**Ed Guevara**")
-    st.write("📧 ed@edguevara.com")
-    st.write("📱 (555) 123-4567")
+elif page == "📞 Text Ed":
+    st.header("Execute Strategy")
+    st.markdown("""
+    <div class="metric-card">
+    <b>Ed Guevara</b><br>
+    📱 <b>(555) 123-4567</b><br>
+    📧 ed@edguevara.com
+    </div>
+    """, unsafe_allow_html=True)
